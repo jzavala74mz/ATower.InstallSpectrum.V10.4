@@ -1,0 +1,381 @@
+---
+  ## Instalación de Spectrum v10.4 
+  ## Inicialmente se programa para instalarce en Red Hat 7.9 (pruebas satisfactorias)
+  ## Autor: Jorge Zavala Navarro
+
+- name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE
+  hosts: all
+  gather_facts: yes
+
+  ## Definición de las variables correspondientes en el còdigo
+  ## path_media_install       --> Ruta donde se encuentra la carpeta de los archivos de instalación
+  ## path_media_install_dir   --> Ruta de la carpeta donde se encuentran los arfchivos de instalación
+  ## path_media_install_file  --> Ruta en donde se encuentra el archivo de instalación tar.gz
+  ## path_sradmin             --> Ruta en donde se va a instalar el SRAdmin
+  ## path_install_libs_sh     --> Nombre y ruta del archivo que va a instalar todas las librerias requeridas 
+  ## url_repogit              --> URL del repositorio GIT de donde se van a descargar los archivos para la inst.
+  ## path_repogit_dir         --> Ruta en donde se van a descargar los archivo desde el repositorio Git
+  ##
+  ## Variables que se esperan desde la ejecución po rel A-Tower
+  ## hostname_name            --> Nombre del Hostname
+  ## hostname_pretty          --> Nombre descriptivo del hostname
+  ## redhat_user              --> Cuenta de usuario de Red Hat    : en caso de que se necesite
+  ## redhat_pass              --> Password del usuario en redhat  : en caso de que se necesite
+
+  vars:
+          repo_tag: spestrum_10_4
+
+          vars:
+          path_media_install: /home/Spectrum
+          path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
+          path_media_install_file: /home/Spectrum/src/InstallerSpectrum10.3.tar
+          path_sradmin: /sw/SPECTRUM/SRAdmin
+          url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
+          path_repogit_dir: /home/Spectrum/git/
+          path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
+          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
+
+  tasks:
+          ####################################################
+          ##  Obtener la información del sistema operativo  ##
+          ####################################################
+          - name: Distribución
+            debug: "msg='{{ ansible_distribution }}'"
+
+          - name: Distribution version
+            debug: "msg='{{ ansible_distribution_version}}'"
+
+          - name: Distribution major version
+            debug: "msg='{{ ansible_distribution_major_version }}'"
+
+          #############################
+          ##  Condiciones Iniciales  ##
+          #############################
+
+          - name: Configurar el modo pemisivo para SELinux
+            command: setenforce 0
+
+          - name: Configurar el modo permisivo SED
+            command: sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/selinux/config
+
+          - name: Asignar hostname: '{{ hostname_name }}'
+            hostname:
+                  name: '{{ hostname_name }}'
+                  use: redhat
+
+          - name: Suscribir la máquina virtual a la cuenta de Red Hat correspondiente
+            command: subscription-manager register --username '{{ redhat_user }}' -password '{{ redhat_pass }}'
+            when: ansible_facts['os_family'] == "RedHat"
+
+          - name: Actualización automática de las librerias
+            command: subscription-manager attach --auto
+            when: ansible_facts['os_family'] == "RedHat"
+
+          ###################################################################
+          ##  Descargamos los elementos del repositorio git para instalar  ##
+          ###################################################################
+
+          - name: Validar si ya se encuentra instalado el git validando el servicio
+            service_facts:
+          - debug:
+                  msg: Git installed!
+            when: "'git' in services"
+
+          - name: Instalar la aplicación git para poder recuperar los recursos correspondientes
+            dnf:
+                    name: git
+                    state: present
+                    ## when: not "'git' in services"
+
+          - name: Validar si existe la carpeta con la información del proyecto contenido en el git
+            stat:
+                    path: '{{ path_repogit_dir }}'
+            register: existe_ruta_carpeta_repogit
+
+          - name: Eliminar la carpeta con el contenido del proyecto en el git para recibir la ultima version
+            file:
+                    path: '{{ path_repogit_dir }}'
+                    state: absent
+            when: existe_ruta_carpeta_repogit.stat.exists
+
+
+          - name: Descargar los recursos del git para este proyecto
+            git:
+                    repo: https://github.com/jzavala74mz/ATower.InstallSpectrumv10.3
+                    dest: '{{ path_repogit_dir }}'
+                    archive: '{{ path_repogit_dir }}'
+
+
+          ##################################################
+          ##  Preparar los requerimientos de instalación  ##
+          ##################################################
+          
+          - name: Realizamos la actualización del sistema
+            command: yum update -y
+
+          - name: Instalar los paquetes requeridos ejecutando el programa en path_install_libs_sh
+            shell: '{{ path_install_libs_sh }} >> {{ path_install_libs_sh }}.output'
+
+
+          - name: Instalar el paquete de mlocate
+            yum:
+                    name: mlocate
+                    state: latest
+
+          - name: Actualizar la updatedb
+            command: updatedb
+
+          - name: Instalar el paquete ksh
+            yum:
+                    name: ksh
+                    state: latest
+
+          - name: Instalar el paquete libXm.so.4 
+            yum:
+                    name: libXm.so.4
+                    state: latest
+   
+          - name: Instalar el paquete motif
+            yum:
+                    name: modif
+                    state: latest
+
+          - name: Instalar el paquete libXm.so.4
+            yum:
+                    name: motif-devel 
+                    state: latest
+
+          - name: Validar los paquetes instalados para la instalación de Spectrum
+            shell: '{{ path_install_libs_sh }} >> {{ path_install_libs_sh }}.output'
+
+
+          #######################################################
+          ##  Adquirir el archivo con la media de instalación  ##
+          #######################################################
+
+            ## - name: Obtenel el programa de instalación copiando desde el servidor local
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          - name: Instalar los paquetes requeridos ejecutando el programa en path_install_libs_sh
+            yum:
+                  name: "{{ packages }}"
+            vars:
+                    packages:
+                    - abrt
+                    - elfutils-libelf
+                    - expat
+                    - fontconfig
+                    - freetype
+                    - glibc
+                    - ksh
+                    - libaio
+                    - libcanberra-gtk2
+                    - libgcc
+                    - libICE
+                    - libjpeg
+                    - libjpeg-turbo
+                    - libpng
+                    - libSM
+                    - libstdc++
+                    - libuuid
+                    - libX11
+                    - libXau
+                    - libxcb
+                    - libXext
+                    - libXft
+                    - libXi
+                    - libXmu
+                    - libXp
+                    - libXrender
+                    - libXt
+                    - libXtst
+                    - motif
+                    - ncurses
+                    - ncurses-compat-libs
+                    - ncurses-libs
+                    - nss-softokn-freebl
+                    - numactl-libs
+                      ## - PackageKit-gtk-module
+                    - PackageKit-gtk3-module
+                    - xorg-x11-fonts-misc
+                      ## - Xorg-x11-server-Xvfb1
+                    - xterm
+                    - zlib
+
+          - name: Validar si existe la carpeta con la media de instalación para spectrum
+            stat:
+                  path: '{{ path_media_install_dest }}'
+            register: existe_path_media_install_dest
+
+          - name: Borrar la actual carpeta de la media de instalación en caso de existir
+            file:
+                  path: '{{ path_media_install_dest }}'
+                  state: absent
+            when: existe_path_media_install_dest.stat.exists
+           
+          - name: Validar si existe la carpeta '{{ path_media_install_dir }}'
+            stat:
+                  path: '{{ path_media_install_dest }}'
+            register: existe_path_media_install_dir
+
+
+          - name: Crear carpeta '{{ path_media_install_dest }}' para depositar la carpeta del instalable
+            file:
+                  path: '{{ path_media_install_dest }}'
+                  state: directory
+                  mode: '0755'
+            when: existe_path_media_install_dir.stat.exists == False
+
+          - name: Descargar la media de instalación desde el portal correspondiente en caso de que aplique
+            get_url:
+                    url: http://gnld.dist.werosoft.com.mx/recursos/index.php/s/tH5JYRpfIaVoVEf/download
+                    dest: '{{ path_media_file_installer }}'
+            when: '"DESCARGAR DESDE LA NUVE" in modo_get_installer'
+
+          - name: Copiar el instalable desde una ruta local (Servidor Destino) ya especificada
+            copy:
+                  src: '{{ path_media_install_dest_form }}'
+                  dest: '{{ path_media_file_installer }}'
+                  remote_src: yes
+                  owner: root
+                  backup: no
+            when: '"COPIA LOCAL MANUAL" in modo_get_installer'
+
+
+          - name: Copiar el archivo instalador localmente (ya debe de existir) segun las rutas especificadas
+            copy:
+                  src: '{{ path_media_file_src }}'
+                  dest: '{{ path_media_file_installer }}'
+                  remote_src: yes
+                  owner: root
+                  backup: no
+            when: '"COPIA LOCAL DEFAULT" in modo_get_installer'
+
+          - name: Descomprimir el instalable y colocamos los archivos
+            unarchive:
+                  src: '{{ path_media_file_installer }}'
+                  dest: '{{ path_media_install_dest }}'
+                  remote_src: yes
+
+
+          #########################################################################
+          ##
+          ## DESCARGAR LOS RECURSOS DEL GIT
+          ##
+          #########################################################################
+          - name: Validar si ya se encuentra instalado el git validando el servicio
+            service_facts:
+          - debug:
+                  msg: Docker installed!
+            when: "'git' in services"
+
+          - name: Instalar la aplicación git para poder recuperar los recursos correspondientes
+            dnf:
+                    name: git
+                    state: present
+                    ## when: not "'git' in services"
+
+          - name: Validar si existe la carpeta con la información del proyecto contenido en el git
+            stat:
+                    path: '{{ ruta_carpeta_repogit }}'
+            register: existe_ruta_carpeta_repogit
+
+          - name: Eliminar la carpeta con el contenido del proyecto en el git
+            file:
+                    path: '{{ ruta_carpeta_repogit }}'
+                    state: absent
+            when: existe_ruta_carpeta_repogit.stat.exists
+
+
+          - name: Descargar los recursos del git para este proyecto
+            git:
+                    repo: https://github.com/jzavala74mz/ATower.InstallSpectrumv10.3
+                    dest: '{{ ruta_carpeta_repogit }}'
+                    archive: '{{ ruta_archivo_repogit }}'
+
+
+
+          
+
+
+          #########################################################################
+          ## 
+          ## INSTALACIÓN DEL SRAdmin daemond
+          ##
+          ########################################################################
+
+          - name: Validar si existe la carpeta en donde vamos a colocar el SRAdmin
+            stat:
+                  path: '{{ path_sradmin }}'
+            register: existe_path_sradmin
+
+          - name: Si la carpeta ya existe detenemos la instalación en lo que se deinen nuevas rutas
+            meta: end_play
+            when: existe_path_sradmin.stat.exists == True
+
+          - name: Crear carpeta '{{ path_sradmin }}' en caso de no existir para depositar la carpeta del instalable
+            file:
+                  path: '{{ path_sradmin }}'
+                  state: directory
+                  mode: '0755'
+            when: existe_path_sradmin.stat.exists == False
+
+          - name: Copiar el archivo SRadmin.exe de la carpeta de instalaciòn del '{{ path_sradmin }}'
+            copy:
+                  src: '{{ path_media_install_dest }}sdic/linux/sradmin.exe'
+                  dest: '{{ path_sradmin }}/sradmin.exe'
+                  remote_src: yes
+                  owner: root
+                  backup: no
+
+          - name: Copiar el archivo sradmin.rc2 al directorio init.d
+            copy:
+                  src: '{{ path_media_install_dest }}sdic/linux/sradmin.rc2'
+                  dest: '/etc/init.d/sradmin'
+                  remote_src: yes
+                  owner: root
+                  backup: no
+
+          - name: Cambiar los permisos al archivo sradmin 
+            file: dest=/etc/init.d/sradmin mode=500
+
+
+          - name: Ejecutamos el comando /sbin/chkconfig --add sradmin
+            command: /sbin/chkconfig --add sradmin
+
+          - name: Iniciar el daemon SRAdmin de spectrum
+            command: /etc/init.d/sradmin start 
+
+
+          - name: ejecutar prueba de archivo de credenciales
+            command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -test'
+
+
+            
+
+          
+
+
+
