@@ -4,8 +4,9 @@
   ## Autor: Jorge Zavala Navarro
 
 - name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE
-  hosts: all
+  hosts: LineaComando
   gather_facts: yes
+
 
   ## Definición de las variables correspondientes en el còdigo
   ## path_media_install       --> Ruta donde se encuentra la carpeta de los archivos de instalación
@@ -61,7 +62,7 @@
           - name: Configurar el modo permisivo SED
             command: sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/selinux/config
 
-          - name: Asignar hostname: '{{ hostname_name }}'
+          - name: 'Asignar hostname: {{ hostname_name }}'
             hostname:
                   name: '{{ hostname_name }}'
                   use: redhat
