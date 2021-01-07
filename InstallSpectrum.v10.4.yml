@@ -234,16 +234,7 @@
           - name: 'Agregar nuestro usuario Owner al grupo Wheel para otorgar permisos {{ user_owner }}'
             command: 'usermod -aG wheel {{ user_owner }}'
 
-          - name: Validamos el proceso de instalaciòn
-            command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -test'
-
           - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
             command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -accept'
 
-            ## - name: Arrancar servicio 
-            ## command: 
-
           
-
-
-
