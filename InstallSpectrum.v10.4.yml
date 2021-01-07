@@ -16,6 +16,7 @@
   ## path_install_libs_sh     --> Nombre y ruta del archivo que va a instalar todas las librerias requeridas 
   ## url_repogit              --> URL del repositorio GIT de donde se van a descargar los archivos para la inst.
   ## path_repogit_dir         --> Ruta en donde se van a descargar los archivo desde el repositorio Git
+  ## path_repogit_file        --> Nombre yu ruta del archivo que se va a recibir desde el git
   ##
   ## Variables que se esperan desde la ejecución po rel A-Tower
   ## hostname_name            --> Nombre del Hostname
@@ -26,18 +27,20 @@
   ## host_pass                --> Contraseña del host origen
   ## host_name                --> Nombre del host de donde vamos a extraer el instalabre correspondiente
   ## host_path                --> Nombre y ruta del archivo origen a copiar al destino
+  ## flag_suscribir           --> Bandera que nos indica si se suscribe el equipo a la cuenta de redhat (SI/NO)
+
   vars:
           repo_tag: spestrum_10_4
 
           vars:
           path_media_install: /home/Spectrum
           path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
-          path_media_install_file: /home/Spectrum/src/InstallerSpectrum10.3.tar
+          path_media_install_file: /home/Spectrum/src/SpectrumInstall_10.4_Linux.tar.gz
           path_sradmin: /sw/SPECTRUM/SRAdmin
           url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
-          path_repogit_dir: /home/Spectrum/git/
+          path_repogit_dir: /home/Spectrum/git
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
-          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
+          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLib.sh'
 
   tasks:
           ####################################################
@@ -59,21 +62,19 @@
           - name: Configurar el modo pemisivo para SELinux
             command: setenforce 0
 
-          - name: Configurar el modo permisivo SED
+          - name: 'Configurar el modo permisivo SED y asignar el hostname: {{ hostname_name }}'
             command: sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/selinux/config
 
-          - name: 'Asignar hostname: {{ hostname_name }}'
-            hostname:
-                  name: '{{ hostname_name }}'
-                  use: redhat
+          - name: 'Asignar el hostname {{ hostname_name }}'
+            command: hostnamectl set-hostname '{{ hostname_name }}'
 
           - name: Suscribir la máquina virtual a la cuenta de Red Hat correspondiente
-            command: subscription-manager register --username '{{ redhat_user }}' -password '{{ redhat_pass }}'
-            when: ansible_facts['os_family'] == "RedHat"
+            command: subscription-manager register --username '{{ redhat_user }}' --password '{{ redhat_pass }}' --force
+            when: ansible_facts['os_family'] == "RedHat" and flag_suscribir == "SI"
 
           - name: Actualización automática de las librerias
             command: subscription-manager attach --auto
-            when: ansible_facts['os_family'] == "RedHat"
+            when: ansible_facts['os_family'] == "RedHat" and flag_suscribir == "SI"
 
           ###################################################################
           ##  Descargamos los elementos del repositorio git para instalar  ##
@@ -88,8 +89,8 @@
           - name: Instalar la aplicación git para poder recuperar los recursos correspondientes
             dnf:
                     name: git
-                    state: present
-                    ## when: not "'git' in services"
+                    state: latest
+            when: not "'git' in services"
 
           - name: Validar si existe la carpeta con la información del proyecto contenido en el git
             stat:
@@ -107,7 +108,7 @@
             git:
                     repo: https://github.com/jzavala74mz/ATower.InstallSpectrumv10.3
                     dest: '{{ path_repogit_dir }}'
-                    archive: '{{ path_repogit_dir }}'
+                    archive: '{{ path_repogit_file }}'
 
 
           ##################################################
@@ -115,10 +116,16 @@
           ##################################################
           
           - name: Realizamos la actualización del sistema
-            command: yum update -y
+            yum:
+                    name: "*"
+                    state: latest
+            ## command: yum update -y
 
-          - name: Instalar los paquetes requeridos ejecutando el programa en path_install_libs_sh
-            shell: '{{ path_install_libs_sh }} >> {{ path_install_libs_sh }}.output'
+          - name: 'Proporcionar los permisos al archivo {{ path_install_libs_sh }} para que se pueda ejecutar'
+            command: 'chmod u+x {{ path_install_libs_sh }}'
+
+          - name: 'Instalar los paquetes requeridos ejecutando el programa en {{ path_install_libs_sh }}'
+            shell: '{{ path_install_libs_sh }} > {{ path_install_libs_sh }}.output'
 
 
           - name: Instalar el paquete de mlocate
@@ -141,8 +148,9 @@
    
           - name: Instalar el paquete motif
             yum:
-                    name: modif
+                    name: motif
                     state: latest
+                    skip_broken: yes
 
           - name: Instalar el paquete libXm.so.4
             yum:
@@ -164,8 +172,8 @@
           ## host_path   : Nombre y ruta del instalable en el servidor origen (podria ser el mismo de tower)
           ## path_media_install_file  : Nombre y ruta del instalador en el servidor destino
           ## path_media_install_dir   : Ruta de la carpeta en donde se encuentran los archivos de instalación
-          - name: Copiar el archivo con la media de instalación al servidor destimo
-            command: 'scp {{ host_user }}@{{ host_name }}:{{ host_path }} {{ path_media_install_file }}'
+          ## - name: Copiar el archivo con la media de instalación al servidor destimo
+          ##   command: 'scp {{ host_user }}@{{ host_name }}:{{ host_path }} {{ path_media_install_file }}'
 
           - name: Crear la carpeta en donde vamos a despositar el contenido del archivo
             file:
@@ -182,16 +190,17 @@
           ##  Instalación del SRAdmin  ##
           ###############################
 
-          - name: Crear carpeta para instalar el SRAdmin
+          - name: Crear carpeta para instalar el SRAdmin validado
             file:
                     path: '{{ path_sradmin }}'
                     state: directory
                     mode: '0755'
 
-          - name: Copiar el programa sradmin.exe desde el instalador
+          - name: Copiar el programa sradmin.exe desde el instalador validar
             copy:
                     src: '{{ path_media_install_dir }}/sdic/linux/sradmin.exe'
                     dest: '{{ path_sradmin }}/sradmin.exe'
+                    remote_src: yes
                     backup: no
 
           - name: Copiar el archivo sradmin.rc2 
