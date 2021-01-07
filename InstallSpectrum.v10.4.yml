@@ -230,17 +230,21 @@
                     name: wheel
                     state: present
                  
-          - name: Agregar nuestro usuario Owner al grupo Wheel para otorgar permisos
+          - name: 'Agregar nuestro usuario Owner al grupo Wheel para otorgar permisos {{ user_owner }}'
             command: 'usermod -aG wheel {{ user_owner }}'
 
-          - name: Ajustar permisos del usuario owner
-            command: 'su - {{ user_owner }}' 
+            ## - name: 'Ajustar permisos del usuario owner {{ user_owner }}'
+            ## command: 'su - {{ user_owner }}' 
 
-          - name: ejecutar prueba de archivo de credenciales
+          - name: Validamos el proceso de instalaciòn
             command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -test'
 
 
-            
+          - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
+            command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -accept'
+
+            ## - name: Arrancar servicio 
+            ## command: 
 
           
 
