@@ -1,0 +1,137 @@
+## El nombre de host del sistema de destino para la instalación. 
+## Nota: No ingrese una dirección IP O localhost en lugar del nombre de host. 
+## remote_host=demospectrumdest.uno
+## remote_host=lab.spec.slc
+remote_host=localhost.localdomain
+
+## El Handle Landscape del sistema remoto. 
+## Requerido solo para Instalaciones SpectroSERVER
+l_handle=11000
+
+## El directorio donde CA Spectrum se hará la instalación. 
+## Por ejemplo, /usr/Spectrum o C:/win32app/Spectrum.
+install_dir=/usr/Spectrum
+
+## Cuenta de usuario del propietario de la instalación.
+install_owner=jzavala74mz
+
+## El nombre de host del servidor de ubicación principal (necesario para todas las instalaciones sin parches). 
+## Solo puede especificar un nombre de host remoto si está instalando un SpectroSERVER
+## Nota: No ingrese la dirección IP en lugar del nombre de host. 
+## main_loc_serv=lab.spec.slc
+main_loc_serv=localhost.localdomain
+
+## La ruta de la información de instalación. 
+## Por ejemplo, si los archivos de instalación están en el directorio local, /tmp/SpectrumInstallMedia, 
+## ingrese vcd_path = /tmp/SpectrumInstallMedia
+vcd_path=/home/jzavala74mz/Downloads/SpectrumInstall_10.4_Linux
+
+## (Opcional)  
+## Defecto = yes para una nueva instalación. 
+## Seleccione no si no desea instalar el SpectroSERVER en la computadora remota. 
+## Solo para instalaciones por primera vez.
+ss_install=yes
+
+## Defecto = no
+## Utilice "yes" para el tipo huge del landscape; "no" para el tipo de identificador horizontal heredado 
+## Considerado si ss_install = yes; Solo para instalaciones por primera vez. 
+huge_landscape_handle=no
+
+## (Opcional)  
+## Defecto = no. 
+## Seleccione ‘no’ si no desea instalar OneClick en la computadora remota. 
+## Solo para instalaciones por primera vez.
+oc_install=yes
+
+## (Opcional)  
+## Defecto = ‘yes’ para una nueva instalación. 
+## Seleccione ‘no’ si no desea instalar componentes marcados como XTN. 
+## Solo para instalaciones por primera vez.
+## Nota:
+## Si establece el parámetro ss_install en Yes, configure el parámetro xtn_install en Yes. 
+## No establezca xtn_install en Sí cuando los componentes marcados como XTN no estén instalados 
+## con OneClick o el SpectroSERVER.
+xtn_install=no
+
+## Defecto = ‘full’. ‘full’ indica el tipo de instalación estándar 
+## (Esto quiere decir que va a instalar todos los componentes de CA Spectrum. 
+## Seleccione ‘minimal’ para Remote Operations Server. 
+## Valor requerido solo para instalaciones nuevas.
+install_type=full
+
+## (Opcional)  
+## Defecto = ‘no’
+## Nota:
+## Este parámetro es aplicable solo cuando se actualiza a versiones de Service Pack / Hot Fix 
+## sobre una versión de lanzamiento base (por ejemplo, actualizar a 10.2.1 desde 10.2), 
+## y no se aplica a archivos PTF (Patch Temporary Fix) o en escenarios de migración ( para, 
+## por ejemplo, migrar de 9.xa 10.x).
+patch=no
+
+## (Opcional)  
+## Defecto = ‘no’
+## Seleccione ‘yes’ para volver a instalar los archivo de la misma versión que se tiene instalada
+same=yes
+
+## (Opcional)  
+## Defecto = ‘no’. Seleccione ‘yes’ para sobrescribir todos los archivos cuando seleccione same = ‘yes’ 
+## y para evitar el proceso de comparar archivos instalados con los archivos que se instalarán. 
+## Los archivos no se conservan.
+overwrite=yes
+
+## (Solo actualizaciones y migraciones) Especifica el idioma a instalar (evformat / pcause / eventtables). 
+## No utilice este parámetro cuando esté actualizando desde  CA Spectrum  9.3 o 9.3 H01. 
+## Valores
+## en_US = Inglés
+## ja_JP = japonés
+## zh_CN = chino simplificado
+## zh_TW = Chino tradicional.
+locale=en_US
+
+## Excluye componentes de la instalación. Esta lista se guarda para futuras actualizaciones / parches. 
+## Por ejemplo: 
+## exclude_parts=SA-RPT-MGR 
+## excluye el componente de CA Spectrum Report Manager from a OneClick distributed installation.
+## exclude_parts = SA-CFMGR; SA-SPM 
+## excluye NCM and SPM from a OneClick distributed installation.
+## excluir_partes = < NÚMERO DE PARTE>;<NÚMERO DE PARTE>
+
+## (Opcional)  
+## Defecto = ‘no’
+## Seleccione ‘yes’ si requiere hacer caso omiso de las advertencias del espacio en disco, 
+## es decir si la capacidad de almacenamiento del servidor no cumple con lo requerido para el sistema
+ignore_disk_space=yes
+
+## Defecto = ‘no’. 
+## Elimina el archivo de bloqueo vnmdb, si existe. Ingrese Sí solo si SpectroSERVER no está funcionando.
+remove_vnmdb_lock=yes
+
+## (Opcional) Opción Administrador de informes (default = ‘no mrigation’). 
+## El nombre de host MySQL necesario para obtener el  Espectro CA Base de datos del Administrador de informes.
+## La contraseña de MySQL es necesaria para  Espectro CA Base de datos del Administrador de informes.
+srm_source_host=lab.spec.slc
+
+## (Opcional) Opción Administrador de informes (predeterminado = Servidor de ubicación principal). 
+## los SpectroSERVER’s de los que Report Manager recopila información.
+srm_ss_servers=lab.spec.slc
+
+## El número de puerto para Apache Tomcat.  
+## Defecto: 80 para Windows; 8080 para Linux.
+tomcat_port=8080
+
+## Un directorio de Apache Tomcat existente. 
+## El predeterminado es el directorio de instalación de OneClick.
+## tomcat_root=/etc/tomcat
+## tomcat_root=/usr/sbin/tomcat/
+## tomcat_root=/usr/Spectrum
+
+## (Opcional) Utilizado por el servidor Process Daemon (processd) solo en Windows. 
+## Para un dominio de Windows, la sintaxis es  
+## <dominio> \ <nombre de usuario>. Predeterminado = nombre de usuario de SRAdmin.
+## server_username=jzavala74mz
+
+## (Opcional) Utilizado por el servidor de proceso en Windows solamente. 
+## Predeterminado = contraseña de SRAdmin.
+## Server_password=P4ssw0rd
+### server_password=P4ssw0rd
+
