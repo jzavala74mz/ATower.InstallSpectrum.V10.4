@@ -157,8 +157,8 @@
                     name: motif-devel 
                     state: latest
 
-          - name: Validar los paquetes instalados para la instalación de Spectrum
-            shell: '{{ path_install_libs_sh }} >> {{ path_install_libs_sh }}.output'
+                    ## - name: Validar los paquetes instalados para la instalación de Spectrum
+                    ## shell: '{{ path_install_libs_sh }} >> {{ path_install_libs_sh }}.output'
 
 
           #######################################################
@@ -207,6 +207,7 @@
             copy:
                     src: '{{ path_media_install_dir }}/sdic/linux/sradmin.rc2'
                     dest: /etc/init.d/sradmin
+                    remote_src: yes
                     mode: '500'
                     backup: no
 
