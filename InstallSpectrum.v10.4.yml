@@ -42,7 +42,7 @@
           url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
           path_repogit_dir: /home/Spectrum/git
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
-          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLib.sh'
+          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
           
 
   tasks:
