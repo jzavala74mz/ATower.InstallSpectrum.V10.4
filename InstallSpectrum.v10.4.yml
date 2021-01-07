@@ -234,10 +234,10 @@
             command: 'usermod -aG wheel {{ user_owner }}'
 
           - name: Validamos el proceso de instalaciòn
-            command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -test'
+            command: '{{ path_media_install_dir }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -test'
 
           - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
-            command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -accept'
+            command: '{{ path_media_install_dir }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -accept'
 
             ## - name: Arrancar servicio 
             ## command: 
