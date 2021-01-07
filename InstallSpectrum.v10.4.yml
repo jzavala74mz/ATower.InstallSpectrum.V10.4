@@ -109,7 +109,7 @@
 
           - name: Descargar los recursos del git para este proyecto
             git:
-                    repo: https://github.com/jzavala74mz/ATower.InstallSpectrumv10.3
+                    repo: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
                     dest: '{{ path_repogit_dir }}'
                     archive: '{{ path_repogit_file }}'
 
