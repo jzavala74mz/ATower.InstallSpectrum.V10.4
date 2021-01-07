@@ -29,6 +29,7 @@
   ## host_name                --> Nombre del host de donde vamos a extraer el instalabre correspondiente
   ## host_path                --> Nombre y ruta del archivo origen a copiar al destino
   ## flag_suscribir           --> Bandera que nos indica si se suscribe el equipo a la cuenta de redhat (SI/NO)
+  ## user_owner               --> Cuenta de Usuario Owner de la instalaciòn (debe de coincidir con el hii)
 
   vars:
           repo_tag: spestrum_10_4
@@ -42,7 +43,7 @@
           path_repogit_dir: /home/Spectrum/git
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
           path_install_libs_sh: '{{ path_repogit_dir }}/InstallLib.sh'
-          user_owner: jzavala74mz
+          
 
   tasks:
           ####################################################
@@ -234,10 +235,10 @@
             command: 'usermod -aG wheel {{ user_owner }}'
 
           - name: Validamos el proceso de instalaciòn
-            command: '{{ path_media_install_dir }}sdic/sdiclinux.exe -h {{ path_repogit_dir }}/SpectrumHII.hii -p {{ path_repogit_dir }}/FilePassword.rsc -test'
+            command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -test'
 
           - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
-            command: '{{ path_media_install_dir }}sdic/sdiclinux.exe -h {{ path_repogit_dir }}/SpectrumHII.hii -p {{ path_repogit_dir }}/FilePassword.rsc -accept'
+            command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -accept'
 
             ## - name: Arrancar servicio 
             ## command: 
