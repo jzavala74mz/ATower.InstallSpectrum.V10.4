@@ -17,6 +17,7 @@
   ## url_repogit              --> URL del repositorio GIT de donde se van a descargar los archivos para la inst.
   ## path_repogit_dir         --> Ruta en donde se van a descargar los archivo desde el repositorio Git
   ## path_repogit_file        --> Nombre yu ruta del archivo que se va a recibir desde el git
+  ## user_owner               --> Cuenta de Usuario Owner de la instalaciòn (debe de coincidir con el hii)
   ##
   ## Variables que se esperan desde la ejecución po rel A-Tower
   ## hostname_name            --> Nombre del Hostname
@@ -41,6 +42,7 @@
           path_repogit_dir: /home/Spectrum/git
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
           path_install_libs_sh: '{{ path_repogit_dir }}/InstallLib.sh'
+          user_owner: jzavala74mz
 
   tasks:
           ####################################################
@@ -228,6 +230,12 @@
                     name: wheel
                     state: present
                  
+          - name: Agregar nuestro usuario Owner al grupo Wheel para otorgar permisos
+            command: 'usermod -aG wheel {{ user_owner }}'
+
+          - name: Ajustar permisos del usuario owner
+            command: 'su - {{ user_owner }}' 
+
           - name: ejecutar prueba de archivo de credenciales
             command: '{{ path_media_install_dest }}sdic/sdiclinux.exe -h {{ ruta_archivo_repogit }}/SpectrumHII.hii -p {{ ruta_archivo_repogit }}/FilePassword.rsc -test'
 
