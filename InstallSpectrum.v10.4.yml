@@ -247,6 +247,6 @@
 
             
           - name: Levantar el servicio de spectrum usando el programa 
-            command: startSS.pl
+            command: './startSS.pl'
 
           
