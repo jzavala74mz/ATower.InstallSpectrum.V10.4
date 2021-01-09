@@ -247,6 +247,8 @@
 
             
           - name: Levantar el servicio de spectrum usando el programa 
-            command: './startSS.pl'
+            command: /usr/Spectrum/bin/startSS.pl
+            become: yes
+            become_user: jzavala74mz
 
           
