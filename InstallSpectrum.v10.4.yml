@@ -237,4 +237,16 @@
           - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
             command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -accept'
 
+
+          ########################################
+          ##  Levanzar el servicio de Spectrum  ##
+          ########################################
+          
+          - name: Colocar en el directorio de comandos
+            command: chdir=/usr/Spectrum/bin ls
+
+            
+          - name: Levantar el servicio de spectrum usando el programa 
+            command: startSS.pl
+
           
