@@ -24,7 +24,7 @@ main_loc_serv=localhost.localdomain
 ## La ruta de la información de instalación. 
 ## Por ejemplo, si los archivos de instalación están en el directorio local, /tmp/SpectrumInstallMedia, 
 ## ingrese vcd_path = /tmp/SpectrumInstallMedia
-vcd_path=/home/jzavala74mz/Downloads/SpectrumInstall_10.4_Linux
+vcd_path=/home/Spectrum/SpectrumInstall_10.4_Linux
 
 ## (Opcional)  
 ## Defecto = yes para una nueva instalación. 
