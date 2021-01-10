@@ -252,8 +252,8 @@
           ##  Levanzar el servicio de Spectrum  ##
           ########################################
           
-          - name: Colocar en el directorio de comandos
-            command: chdir=/usr/Spectrum/bin ls
+            ## - name: Colocar en el directorio de comandos
+            ## command: chdir=/usr/Spectrum/bin ls
 
             
           - name: Levantar el servicio de spectrum usando el programa 
