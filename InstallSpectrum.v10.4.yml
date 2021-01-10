@@ -37,7 +37,7 @@
           vars:
           path_media_install: /home/Spectrum
           path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
-          path_media_install_file: /home/Spectrum/src/SpectrumInstall_10.4_Linux.tar.gz
+          path_media_install_file: /root/SpectrumInstall_10.4_Linux.tar.gz
           path_sradmin: /sw/SPECTRUM/SRAdmin
           url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
           path_repogit_dir: /home/Spectrum/git
@@ -185,11 +185,13 @@
                     state: directory
                     mode: '0755'
            
-          - name: Copiar el archivo con la instalación
-            copy:
-                    src: /home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz
-                    dest: '{{ path_media_install_file }}'
-                    remote_src: no
+          - name: Transfiriendo archivo de instalación
+            command: 'scp root@192.168.112.174:/home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz {{ path_media_install_file }}'
+
+            ##copy:
+            ##        src: /home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz
+            ##        dest: '{{ path_media_install_file }}'
+            ##        remote_src: no
 
 
           - name: Descomprimir archivo de instalación
