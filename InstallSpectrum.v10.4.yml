@@ -186,7 +186,7 @@
                     mode: '0755'
            
           - name: Transfiriendo archivo de instalación
-            command: 'scp root@192.168.112.174:/home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz {{ path_media_install_file }}'
+            command: 'expect {{ path_repogit_dir }}/ScriptCopyinstalador.sh'
 
             ##copy:
             ##        src: /home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz
