@@ -168,6 +168,7 @@
           ##  Adquirir el archivo con la media de instalación  ##
           #######################################################
 
+            
           ## Parámetros a utilizar
           ## host_user   : Cuenta de usuario para conectarse al host
           ## host_pass   : Clave secreta para conectarce 
@@ -184,6 +185,13 @@
                     state: directory
                     mode: '0755'
            
+          - name: Copiar el archivo con la instalación
+            copy:
+                    src: /home/jzavala74mz/Uploads/SpectrumInstall_10.4_Linux.tar.gz
+                    dest: '{{ path_media_install_file }}'
+                    remote_src: no
+
+
           - name: Descomprimir archivo de instalación
             command: 'tar -zxvf {{ path_media_install_file }} -C {{ path_media_install_dir }}'
 
