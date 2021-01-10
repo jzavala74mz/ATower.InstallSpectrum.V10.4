@@ -3,7 +3,7 @@
   ## Inicialmente se programa para instalarce en Red Hat 7.9 (pruebas satisfactorias)
   ## Autor: Jorge Zavala Navarro
 
-- name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE
+- name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE (1035)
   hosts: all
   gather_facts: yes
 
