@@ -4,7 +4,7 @@
   ## Autor: Jorge Zavala Navarro
 
 - name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE
-  hosts: LineaComando
+  hosts: all
   gather_facts: yes
 
 
