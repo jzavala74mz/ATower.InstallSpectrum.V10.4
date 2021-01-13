@@ -202,6 +202,13 @@
           ###############################
           ##  Instalación del SRAdmin  ##
           ###############################
+         
+
+          - name: Preparando puertos el SRAdmin
+            command: service firewalld stop
+
+          - name: Preparando el SRAdmin Dos
+            command: systemctl disable firewalld
 
           - name: Crear carpeta para instalar el SRAdmin validado
             file:
@@ -226,6 +233,9 @@
 
           - name: Chequeo de confirmación
             command: /sbin/chkconfig --add sradmin
+
+          - name: Habilitar la opción de ejecutar para chmod u+x /sw/SPECTRUM/SRAdmin/sradmin.exe
+            command: chmod u+x /sw/SPECTRUM/SRAdmin/sradmin.exe
 
           - name: Iniciar servicio de SRAdmin
             command: /etc/init.d/sradmin start 
