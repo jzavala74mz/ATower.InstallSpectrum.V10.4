@@ -30,6 +30,9 @@
   ## host_path                --> Nombre y ruta del archivo origen a copiar al destino
   ## flag_suscribir           --> Bandera que nos indica si se suscribe el equipo a la cuenta de redhat (SI/NO)
   ## user_owner               --> Cuenta de Usuario Owner de la instalaciòn (debe de coincidir con el hii)
+  ## flag_restaurar           --> Bandera que nos indica que se va a restaurar algun backup
+  ## archivo_restaurar        --> Unicamente el nombre del archivo a restaurar
+  
 
   vars:
           repo_tag: spestrum_10_4
@@ -43,13 +46,15 @@
           path_repogit_dir: /home/Spectrum/git
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
           path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
+          path_spectrum_root: /usr/Spectrum
+          cmd_comando_iniciar_cargar: /SS-Tools/SSdbload -i -l
           
 
   tasks:
           ####################################################
           ##  Obtener la información del sistema operativo  ##
           ####################################################
-          - name: Distribución
+          - name: Sistema Operativo
             debug: "msg='{{ ansible_distribution }}'"
 
           - name: Distribution version
@@ -57,6 +62,9 @@
 
           - name: Distribution major version
             debug: "msg='{{ ansible_distribution_major_version }}'"
+
+          - name: Instalación con restauración de base de datiose
+            debug: "Restauracion='{{ archivo_restaurar }}'"
 
           #############################
           ##  Condiciones Iniciales  ##
@@ -267,5 +275,48 @@
             command: /usr/Spectrum/bin/startSS.pl
             become: yes
             become_user: jzavala74mz
+
+
+          ##############################################################################
+          ## Restaurar Spectrum de algun backup especificado en caso de ser requerido ##
+          ##############################################################################
+          
+          - name: Descargar los recursos del git para este proyecto
+            git:
+                    repo: https://github.com/jzavala74mz/ATower.RestoreSpectrum.V10.4
+                    dest: '{{ path_repogit_dir }}'
+                    archive: '{{ path_repogit_file }}'
+
+
+          - name: Transfiriendo archivo de recuperación
+            command: 'expect {{ path_repogit_dir }}/ScriptCopyBackup.sh'
+            when: flag_restaurar == "SI"
+
+          - name: Validar Transferencia de archivo
+            stat:
+                    path: /root/db_20210110_1307.SSdb
+            register: stat_existe_respaldo
+            when: flag_restaurar == "SI"
+
+          - name: Detener servicio para restaurar el archivo
+            command: '{{ path_spectrum_root }}/bin/stopSS.pl'
+            become: yes
+            become_user: jzavala74mz
+            when: flag_restaurar == "SI"
+
+          - name: 'Ejecutamos el restore'
+            command: '{{ path_spectrum_root }}/{{ cmd_comando_cargar }} /root/db_20210110_1307.SSdb'
+            when:  stat_existe_respaldo.stat.exists and flag_restaurar == "SI"
+
+          - name: Levantar el servicio con la información restaurada
+            command: /usr/Spectrum/bin/startSS.pl
+            become: yes
+            become_user: jzavala74mz
+            when: flag_restaurar == "SI"
+
+
+
+
+
 
           
