@@ -25,7 +25,7 @@
             command: 'chdir={{ path_spectrum_root }}/Install-Tools/Uninstaller ls'
 
           - name: Ejecutar el desinstalador del programa
-            command: 'Uninstall {{ path_spectrum_root }} {{ path_tmp_uninstall }} -silent'
+            command: '{{ path_spectrum_root }}/Install-Tools/Uninstaller/Uninstall {{ path_spectrum_root }} {{ path_tmp_uninstall }} -silent'
 
 
 
