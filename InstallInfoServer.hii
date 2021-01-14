@@ -2,7 +2,7 @@
 ## Nota: No ingrese una dirección IP O localhost en lugar del nombre de host. 
 ## remote_host=demospectrumdest.uno
 ## remote_host=lab.spec.slc
-remote_host=localhost.localdomain
+remote_host=spectrum.vmwarelab
 
 ## El Handle Landscape del sistema remoto. 
 ## Requerido solo para Instalaciones SpectroSERVER
@@ -19,7 +19,7 @@ install_owner=jzavala74mz
 ## Solo puede especificar un nombre de host remoto si está instalando un SpectroSERVER
 ## Nota: No ingrese la dirección IP en lugar del nombre de host. 
 ## main_loc_serv=lab.spec.slc
-main_loc_serv=localhost.localdomain
+main_loc_serv=spectrum.vmwarelab
 
 ## La ruta de la información de instalación. 
 ## Por ejemplo, si los archivos de instalación están en el directorio local, /tmp/SpectrumInstallMedia, 
@@ -71,13 +71,13 @@ patch=no
 ## (Opcional)  
 ## Defecto = ‘no’
 ## Seleccione ‘yes’ para volver a instalar los archivo de la misma versión que se tiene instalada
-same=yes
+same=no
 
 ## (Opcional)  
 ## Defecto = ‘no’. Seleccione ‘yes’ para sobrescribir todos los archivos cuando seleccione same = ‘yes’ 
 ## y para evitar el proceso de comparar archivos instalados con los archivos que se instalarán. 
 ## Los archivos no se conservan.
-overwrite=yes
+overwrite=no
 
 ## (Solo actualizaciones y migraciones) Especifica el idioma a instalar (evformat / pcause / eventtables). 
 ## No utilice este parámetro cuando esté actualizando desde  CA Spectrum  9.3 o 9.3 H01. 
