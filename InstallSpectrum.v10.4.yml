@@ -48,6 +48,7 @@
           path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
           path_spectrum_root: /usr/Spectrum
           cmd_comando_iniciar_cargar: /SS-Tools/SSdbload -i -l
+          cmd_comando_cargar: /SS-Tools/SSdbload -l
           
 
   tasks:
