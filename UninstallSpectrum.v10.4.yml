@@ -1,0 +1,33 @@
+---
+  ## Des-Instalación de Spectrum v10.4 
+  ## Inicialmente se programa para instalarce en Red Hat 7.9 (pruebas satisfactorias)
+  ## Autor: Jorge Zavala Navarro
+
+- name: INSTALAR SPECTRUM 10.4 EN LINUX RED HAT 7.9 ENTERPRISE (1143)
+  hosts: all
+  gather_facts: yes
+
+  vars:
+          path_spectrum_root: /usr/Spectrum
+          path_tmp_uninstall: /tmp/unistall_spectrum
+
+
+  tasks:
+          
+          - name: Detener los servicios de spectrum
+            command: '{{ path_spectrum_root }}/bin/stopSS.pl'
+
+          - name: Esperar en lo que se detiene el servicio (10 segs. max.)
+            pause:
+                    seconds: 10
+
+          - name: Ubicar el directorio para desinstalar Spectrum
+            command: 'chdir={{ path_spectrum_root }}/Install-Tools/Uninstaller ls'
+
+          - name: Ejecutar el desinstalador del programa
+            command: 'Uninstall {{ path_spectrum_root }} {{ path_tmp_uninstall }} -silent'
+
+
+
+
+
