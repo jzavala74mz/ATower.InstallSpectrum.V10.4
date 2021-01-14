@@ -279,15 +279,10 @@
 
           ##############################################################################
           ## Restaurar Spectrum de algun backup especificado en caso de ser requerido ##
-          ##############################################################################
+         ##############################################################################
+
+          ## expect /home/Spectrum/git/ScriptCopyBackup.sh'
           
-          - name: Descargar los recursos del git para este proyecto
-            git:
-                    repo: https://github.com/jzavala74mz/ATower.RestoreSpectrum.V10.4
-                    dest: '{{ path_repogit_dir }}'
-                    archive: '{{ path_repogit_file }}'
-
-
           - name: Transfiriendo archivo de recuperación
             command: 'expect {{ path_repogit_dir }}/ScriptCopyBackup.sh'
             when: flag_restaurar == "SI"
