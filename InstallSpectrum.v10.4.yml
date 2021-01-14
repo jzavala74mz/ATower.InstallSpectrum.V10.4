@@ -119,10 +119,7 @@
           ##################################################
           
           - name: Realizamos la actualización del sistema
-            yum:
-                    name: "*"
-                    state: latest
-            ## command: yum update -y
+            command: yum update -y
 
           - name: 'Proporcionar los permisos al archivo {{ path_install_libs_sh }} para que se pueda ejecutar'
             command: 'chmod u+x {{ path_install_libs_sh }}'
