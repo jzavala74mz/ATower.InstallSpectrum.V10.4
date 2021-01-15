@@ -302,7 +302,7 @@
 
           - name: 'Ejecutamos el restore'
             command: '{{ path_spectrum_root }}/{{ cmd_comando_cargar }} /root/db_20210110_1307.SSdb'
-            when:  stat_existe_respaldo.stat.exists and flag_restaurar == "SI"
+            when:  flag_restaurar == "SI"
 
           - name: Levantar el servicio con la información restaurada
             command: /usr/Spectrum/bin/startSS.pl
