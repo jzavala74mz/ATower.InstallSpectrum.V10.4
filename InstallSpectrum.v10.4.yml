@@ -280,7 +280,7 @@
 
           ##############################################################################
           ## Restaurar Spectrum de algun backup especificado en caso de ser requerido ##
-         ##############################################################################
+          ##############################################################################
 
           ## expect /home/Spectrum/git/ScriptCopyBackup.sh'
           
@@ -295,13 +295,36 @@
             when: flag_restaurar == "SI"
 
           - name: Ubicar en la carpeta de las herramientas SS-Tools
-            command: chdir=/usr/Spectrum/SS-Tools/
+            command: cd /usr/Spectrum/SS-Tools/
             when: flag_restaurar == "SI"
 
           - name: Restaurar Topologia
-            command: '{{ path_spectrum_root }}/SS-Tools//modelinggateway -vnm spectrum -user jzavala74mz -i /root/salida.xml'
-            become: yes
-            become_user: jzavala74mz
+            command: '{{ path_spectrum_root }}/SS-Tools/modelinggateway -vnm spectrum -user jzavala74mz -i /root/salida.xml'
             when:  flag_restaurar == "SI"
+
+          ##############################################################
+          ## Notificaciones de la ejecución del proceso satisfactorio ##
+          ##############################################################
+          - name: Notificando el proceso terminado
+            mail:
+                    host: mail.werosoft.com.mx
+                    port: 587
+                    username: jorge.zavala@werosoft.com.mx
+                    password: Jorge.Zavala$1974
+                    subtype: html
+                    from: jorge.zavala@werosoft.com.mx
+                    to:
+                            - jzavala74mz@yahoo.com.mx
+                            - jzavala74mz@gmail.com
+                            - jzavala@werosoft.com.mx
+                    cc:
+                            - mariana.mendez.piro@gmail.com
+                    attach:
+                            - /home/jzavala74mz/Uploads/salida.xml
+                    subject: A-Tower Instalación de SPECTRUM OK
+                    body: 'BUENAS TARDES.<br><br>Informamos que la instalación de Spectrum se ejectó <b>satisfactoriamente</b>. <br><br><br>Saludos'
+            delegate_to: localhost
+            when:  flag_restaurar == "SI"
+
 
          
