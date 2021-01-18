@@ -290,29 +290,18 @@
 
           - name: Validar Transferencia de archivo
             stat:
-                    path: /root/db_20210110_1307.SSdb
+                    path: /root/salida.xml
             register: stat_existe_respaldo
             when: flag_restaurar == "SI"
 
-          - name: Detener servicio para restaurar el archivo
-            command: '{{ path_spectrum_root }}/bin/stopSS.pl'
-            become: yes
-            become_user: jzavala74mz
+          - name: Ubicar en la carpeta de las herramientas SS-Tools
+            command: chdir=/usr/Spectrum/SS-Tools/
             when: flag_restaurar == "SI"
 
-          - name: 'Ejecutamos el restore'
-            command: '{{ path_spectrum_root }}/{{ cmd_comando_cargar }} /root/db_20210110_1307.SSdb'
+          - name: Restaurar Topologia
+            command: '{{ path_spectrum_root }}/SS-Tools//modelinggateway -vnm spectrum -user jzavala74mz -i /root/salida.xml'
+            become: yes
+            become_user: jzavala74mz
             when:  flag_restaurar == "SI"
 
-          - name: Levantar el servicio con la información restaurada
-            command: /usr/Spectrum/bin/startSS.pl
-            become: yes
-            become_user: jzavala74mz
-            when: flag_restaurar == "SI"
-
-
-
-
-
-
-          
+         
