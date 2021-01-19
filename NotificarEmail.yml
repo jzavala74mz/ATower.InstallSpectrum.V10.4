@@ -1,0 +1,58 @@
+---
+  ## Instalación de Spectrum v10.4 
+  ## Inicialmente se programa para instalarce en Red Hat 7.9 (pruebas satisfactorias)
+  ## Autor: Jorge Zavala Navarro
+
+- name: NOTIFICACIÓN DE CORREO ELECTRÓNICO
+  hosts: SpectrumDemo
+  gather_facts: yes
+
+  vars:
+          repo_tag: spestrum_10_4
+
+          vars:
+          path_media_install: /home/Spectrum
+          path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
+          path_media_install_file: /root/SpectrumInstall_10.4_Linux.tar.gz
+          path_sradmin: /sw/SPECTRUM/SRAdmin
+          url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
+          path_repogit_dir: /home/Spectrum/git
+          path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
+          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
+          path_spectrum_root: /usr/Spectrum
+          cmd_comando_iniciar_cargar: /SS-Tools/SSdbload -i -l
+          cmd_comando_cargar: /SS-Tools/SSdbload -l
+
+
+  tasks:
+          - name: Test
+            command: ll
+
+
+          ##############################################################
+          ## Notificaciones de la ejecución del proceso satisfactorio ##
+          ##############################################################
+          - name: Notificando el proceso terminado
+            mail:
+                    host: mail.werosoft.com.mx
+                    port: 587
+                    username: jorge.zavala@werosoft.com.mx
+                    password: Jorge.Zavala$1974
+                    subtype: html
+                    from: jorge.zavala@werosoft.com.mx
+                    to:
+                            - jzavala74mz@yahoo.com.mx
+                            - jzavala74mz@gmail.com
+                            - jzavala@werosoft.com.mx
+                    cc:
+                            - mariana.mendez.piro@gmail.com
+                              ## attach:
+                              ## - /home/jzavala74mz/Uploads/salida.xml
+                    subject: A-Tower Instalación de SPECTRUM OK
+                    body: 'BUENAS TARDES.<br><br>Informamos que la instalación de Spectrum se ejectó <b>satisfactoriamente</b>. <br><br><br>Saludos'
+            delegate_to: localhost
+            become: yes
+            become_user: root
+            when:  flag_restaurar == "SI"
+
+
