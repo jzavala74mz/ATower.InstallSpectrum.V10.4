@@ -302,9 +302,9 @@
             command: '{{ path_spectrum_root }}/SS-Tools/modelinggateway -vnm spectrum -user jzavala74mz -i /root/salida.xml'
             when:  flag_restaurar == "SI"
 
-          - name: Dar permisos al archivo que se va a enviar
-            command: chmod 777 /home/jzavala74mz/Uploads/salida.xml
-            when:  flag_restaurar == "SI"
+            ## - name: Dar permisos al archivo que se va a enviar
+            ## command: chmod 777 /home/jzavala74mz/Uploads/salida.xml
+            ## when:  flag_restaurar == "SI"
 
 
           ##############################################################
@@ -324,8 +324,8 @@
                             - jzavala@werosoft.com.mx
                     cc:
                             - mariana.mendez.piro@gmail.com
-                    attach:
-                            - /home/jzavala74mz/Uploads/salida.xml
+                              ## attach:
+                              ## - /home/jzavala74mz/Uploads/salida.xml
                     subject: A-Tower Instalación de SPECTRUM OK
                     body: 'BUENAS TARDES.<br><br>Informamos que la instalación de Spectrum se ejectó <b>satisfactoriamente</b>. <br><br><br>Saludos'
             delegate_to: localhost
