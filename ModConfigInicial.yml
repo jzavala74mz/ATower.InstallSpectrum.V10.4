@@ -1,0 +1,60 @@
+---
+  #############################################################################################3##
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ModConfigInicial.yml  
+  ##  
+  ##  
+  ##  Descripción:
+  ##            Archivo con las tareas necesarias para realizar las configuraciones 
+  ##            necesarias y lograr una instalación de Spectrum 10.4 en un servidor 
+  ##            RedHat 7.9 de forma satisfactoria
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            26 de Enero  de 2021
+  ##
+  ##  Variables recibidas desde ATower/Linea de comandos:
+  ##
+  ##            - hostname_name:    Nombre del servidor que se le va a asignar al servidor destino
+  ##
+  ##            - redhat_user:      Cuenta de usuario en el portal de Red Hat
+  ##
+  ##            - redhat_pass:      Password para ingresar al portal de Red Hat
+  ##
+  ##            - flag_suscribir:   Bandera que nos indica si se va a suscribir el servidor a
+  ##                                la cuenta de RedHat
+  ##
+  ###############################################################################################
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 CONFIGURACIONES INICIALES
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+          - name: DESACTIVAMOS TEMPORALMENTE SELINUX
+            command: setenforce 0
+
+          - name: CONFIGURAR EL MODO PERMISIVO DE LINUX
+            command: sed -i 's/^SELINUX=.*/SELINUX=permissive/g' /etc/selinux/config
+
+          - name: 'ASIGNAMOS EL HOSTNAME AL SERVIDOR DESTINO {{ hostname_name }}'
+            command: hostnamectl set-hostname '{{ hostname_name }}'
+
+          - name: 'SUSCRIBIR EL SERVIDOR RHEL A LA CUENTA DE RED HAT CORRESPONDIENTE {{ redhat_user }}'
+            command: subscription-manager register --username '{{ redhat_user }}' --password '{{ redhat_pass }}' --force
+            when: ansible_facts['os_family'] == "RedHat" and flag_suscribir == "SI"
+
+          - name: ACTIVACIÓN DE LA ACTUALIZACIÓN AUTOMÁTICA DE LIBRERIAS
+            command: subscription-manager attach --auto
+            when: ansible_facts['os_family'] == "RedHat" and flag_suscribir == "SI"
+
+
