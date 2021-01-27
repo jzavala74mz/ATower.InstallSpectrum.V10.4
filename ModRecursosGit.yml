@@ -1,0 +1,84 @@
+---
+  #############################################################################################3##
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ModConfigInicial.yml  
+  ##  
+  ##  
+  ##  Descripción:
+  ##            Archivo con las tareas necesarias para realizar las configuraciones 
+  ##            necesarias y lograr una instalación de Spectrum 10.4 en un servidor 
+  ##            RedHat 7.9 de forma satisfactoria
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            26 de Enero  de 2021
+  ##
+  ##  Constantes locales del programa
+  ##
+  ##            - path_repogit_dir:    Nombre y ruta de la carpeta en donde se van a descargar 
+  ##                                   los recursos descargados del git
+  ##
+  ##            - path_repogit_file:   Nombre y ruta del archivo comprimido (zip) que se va a 
+  ##                                   descargar desde el repositorio del Git
+  ##
+  ##            - url_repogit:         URL del repositorio git donde se encuentran los recursos 
+  ##                                   para descargar y realizar la instalación de Spectrum 
+  ##
+  ###############################################################################################
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 OBTENER LOS RECURSOS DEL GIT
+  hosts: all
+  gather_facts: yes
+
+  vars:
+          url_repogit: https://github.com/jzavala74mz/ATower.InstallSpectrum.V10.4
+          path_repogit_dir: /home/Spectrum/git
+          path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
+
+  
+  tasksurl_repogit:
+
+          - name: Validar si ya se encuentra instalado el git validando el servicio
+            service_facts:
+          - debug:
+                  msg: Git installed!
+            when: "'git' in services"
+
+          - name: Instalar la aplicación git para poder recuperar los recursos correspondientes
+            dnf:
+                    name: git
+                    state: latest
+            when: not "'git' in services"
+
+          - name: Validar si existe la carpeta con la información del proyecto contenido en el git
+            stat:
+                    path: '{{ path_repogit_dir }}'
+            register: existe_ruta_carpeta_repogit
+
+          - name: Eliminar la carpeta con el contenido del proyecto en el git para recibir la ultima version
+            file:
+                    path: '{{ path_repogit_dir }}'
+                    state: absent
+            when: existe_ruta_carpeta_repogit.stat.exists
+
+
+          - name: Descargar los recursos del git para este proyecto
+            git:
+                    repo: '{{ url_repogit }}'
+                    dest: '{{ path_repogit_dir }}'
+                    archive: '{{ path_repogit_file }}'
+
+
+
+
+
+
