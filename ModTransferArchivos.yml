@@ -1,0 +1,59 @@
+---
+  ##############################################################################################################
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ModTransferArchivos.yml  
+  ##  
+  ##  
+  ##  Descripción:
+  ##            Este programa se va a encargar de realizar las de los archivos de instalación
+  ##            desde el servidor de ATower al servidor destino en donde se va a instalar 
+  ##            spectrum 
+  ##
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            27 de Enero  de 2021
+  ##
+  ##  Constantes locales del programa
+  ##
+  ##            - path_media_install_dir:    Nombre y ruta de la carpeta en donde se van a depositar 
+  ##                                         los archivos con la media de instalación de Spectrum 10.4
+  ##
+  ##            - path_repogit_dir:          Nombre y ruta de la carpeta en donde se van a descargar 
+  ##                                         los recursos descargados del git
+  ##
+  ##            - path_media_install_file:   Nombre y ruta del archivo de instalación de Spectrum 10.14
+  ##
+  ##############################################################################################################
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 TRANSFERIR LAS MEDIAS DE INSTALACIÓN AL SERVIDOR DESTINO
+  hosts: all
+  gather_facts: yes
+
+  var:
+          path_repogit_dir: /home/Spectrum/git
+          path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
+          path_media_install_file: /root/SpectrumInstall_10.4_Linux.tar.gz
+
+
+          - name: Crear la carpeta en donde vamos a despositar el contenido del archivo
+            file:
+                    path: '{{ path_media_install_dir }}'
+                    state: directory
+                    mode: '0755'
+
+          - name: Transfiriendo archivo de instalación
+            command: 'expect {{ path_repogit_dir }}/ScriptCopyinstalador.sh'
+
+          - name: Descomprimir archivo de instalación
+            command: 'tar -zxvf {{ path_media_install_file }} -C {{ path_media_install_dir }}'
+
