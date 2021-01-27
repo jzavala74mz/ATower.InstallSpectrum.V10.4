@@ -1,0 +1,83 @@
+---
+  #############################################################################################3##
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ModActualizarLibs.yml  
+  ##  
+  ##  
+  ##  Descripción:
+  ##            Este programa se va a encargar de ejecutar los scripts para actualizar las 
+  ##            librerias del Sistema Operativo y a descargar e instalar las librerias y
+  ##            paquetes requeridos para la instalación de Spectrum 10.2
+  ##            
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            26 de Enero  de 2021
+  ##
+  ##  Constantes locales del programa
+  ##
+  ##            - path_repogit_dir:      Nombre y ruta de la carpeta donde se encuentran los 
+  ##                                     scripts para la instalación de Spectrum 10.4
+  ##            - path_install_libs_sh:  Nombre y ruta del archivo shell que se va a encargar 
+  ##                                     de realizar las instalaciones y actualizaciones de las
+  ##                                     librerias y paquetes requeridos para Spectrum 10.4
+  ##
+  ###############################################################################################
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 ACTUALIZACIÓN E INSTALACIÓN DE LIBRERIAS
+  hosts: all
+  gather_facts: yes
+
+  vars:
+          path_install_libs_sh: '{{ path_repogit_dir }}/InstallLibs.sh'
+          path_repogit_dir: /home/Spectrum/git
+
+  tasks:
+          - name: Realizamos la actualización del sistema
+            command: yum update -y
+
+          - name: 'Proporcionar los permisos al archivo {{ path_install_libs_sh }} para que se pueda ejecutar'
+            command: 'chmod u+x {{ path_install_libs_sh }}'
+
+          - name: 'Instalar los paquetes requeridos ejecutando el programa en {{ path_install_libs_sh }}'
+            shell: '{{ path_install_libs_sh }} > {{ path_install_libs_sh }}.output'
+
+
+          - name: Instalar el paquete de mlocate
+            yum:
+                    name: mlocate
+                    state: latest
+
+          - name: Actualizar la updatedb
+            command: updatedb
+
+          - name: Instalar el paquete ksh
+            yum:
+                    name: ksh
+                    state: latest
+          - name: Instalar el paquete libXm.so.4
+            yum:
+                    name: libXm.so.4
+                    state: latest
+
+          - name: Instalar el paquete motif
+            yum:
+                    name: motif
+                    state: latest
+                    skip_broken: yes
+
+          - name: Instalar el paquete libXm.so.4
+            yum:
+                    name: motif-devel
+                    state: latest
+
+
