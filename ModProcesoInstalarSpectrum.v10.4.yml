@@ -1,0 +1,98 @@
+---
+  #############################################################################################3##
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ProcesoInstalarSpectrum.v10.4.yml  
+  ##  
+  ##  
+  ##  Descripción:
+  ##            Proceso con las actividades necesarias para realizar la instalación de la
+  ##            solución, post-configuración, puesta en marca, recuperación de backup's y
+  ##            notificaciones correspondientes
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            26 de Enero  de 2021
+  ##
+  ##  Variables recibidas desde ATower/Linea de comandos:
+  ##
+  ##            - hostname_name:    Nombre del servidor que se le va a asignar al servidor destino
+  ##
+  ##            - redhat_user:      Cuenta de usuario en el portal de Red Hat
+  ##
+  ##            - redhat_pass:      Password para ingresar al portal de Red Hat
+  ##
+  ##            - flag_suscribir:   Bandera que nos indica si se va a suscribir el servidor a
+  ###############################################################################################
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 CONFIGURACIONES INICIALES
+  hosts: all
+  gather_facts: yes
+
+
+
+
+
+  tasks:
+
+          - name: Ejecutar el proceso de Instalaciòn para spectrum (se aceptará la licencia)
+            command: '{{ path_media_install_dir }}/sdic/sdiclinux.exe -h {{ path_repogit_dir }}/InstallInfoServer.hii -p {{ path_repogit_dir }}/InstallPassword.txt -accept'
+
+          - name: Levantar el servicio de spectrum usando el programa
+            command: /usr/Spectrum/bin/startSS.pl
+            become: yes
+            become_user: jzavala74mz
+
+
+          ##############################################################################
+          ## Restaurar Spectrum de algun backup especificado en caso de ser requerido ##
+          ##############################################################################
+
+          ## expect /home/Spectrum/git/ScriptCopyBackup.sh'
+
+          - name: Transfiriendo archivo de recuperación
+            command: 'expect {{ path_repogit_dir }}/ScriptCopyBackup.sh'
+            when: flag_restaurar == "SI"
+
+          - name: Validar Transferencia de archivo
+            stat:
+                    path: /root/salida.xml
+            register: stat_existe_respaldo
+            when: flag_restaurar == "SI"
+
+          - name: Ubicar en la carpeta de las herramientas SS-Tools
+            command: cd /usr/Spectrum/SS-Tools/
+            when: flag_restaurar == "SI"
+
+          - name: Restaurar Topologia
+            command: '{{ path_spectrum_root }}/SS-Tools/modelinggateway -vnm spectrum -user jzavala74mz -i /root/salida.xml'
+            when:  flag_restaurar == "SI"
+
+
+          - name: Notificando el proceso terminado
+            mail:
+                    host: mail.werosoft.com.mx
+                    port: 587
+                    username: jorge.zavala@werosoft.com.mx
+                    password: Jorge.Zavala$1974
+                    subtype: html
+                    from: jorge.zavala@werosoft.com.mx
+                    to:
+                            - jzavala74mz@yahoo.com.mx
+                            - jzavala74mz@gmail.com
+                            - jzavala@werosoft.com.mx
+                    cc:
+                            - mariana.mendez.piro@gmail.com
+                    subject: A-Tower Instalación de SPECTRUM OK
+                    body: 'BUENAS TARDES.<br><br>Informamos que la instalación de Spectrum se ejectó <b>satisfactoriamente</b>. <br><br><br>Saludos'
+            delegate_to: localhost
+
+            

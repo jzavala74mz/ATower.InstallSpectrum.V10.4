@@ -1,0 +1,87 @@
+---
+  #############################################################################################3##
+  ##
+  ##  Syntech de México S. A. de C. V.
+  ##
+  ##  Servicios de Consultoria en Tecnologías de Información
+  ##
+  ##  Proyecto:
+  ##            Demostración de la Solución A-Tower a nivel Gerencial
+  ##
+  ##  Archivo:
+  ##            ModInstallSRAdmin.yml  
+  ##  
+  ##  
+  ##  Descripción
+  ##           Configuración, Instalación y puesta en marcha del programa SRAdmin
+  ##
+  ##  Autor:
+  ##            Jorge Zavala Navarro
+  ##
+  ##  Fecha:    
+  ##            28 de Enero  de 2021
+  ##
+  ##  Variables Definidas para este PlayBook
+  ##
+  ##            - path_sradmin:     Ruta en donde se va a instalar el SRAdmin
+  ##
+  ##            - path_media_install_dir: Nombre y ruta donde se encuentran los archivos de 
+  ##                                instalción
+  ##
+  ##
+  ###############################################################################################3
+
+- name: INSTALACIÓN DE SPECTRUM 10.4 EN RED HAT 7.9 CONFIGURACIONES INICIALES
+  hosts: all
+  gather_facts: yes
+
+  vars:
+          path_sradmin: /sw/SPECTRUM/SRAdmin
+          path_media_install_dir: /home/Spectrum/SpectrumInstall_10.4_Linux
+
+  tasks:
+
+
+          - name: Preparando puertos el SRAdmin
+            command: service firewalld stop
+
+          - name: Preparando el SRAdmin Dos
+            command: systemctl disable firewalld
+
+          - name: Crear carpeta para instalar el SRAdmin validado
+            file:
+                    path: '{{ path_sradmin }}'
+                    state: directory
+                    mode: '0755'
+
+          - name: Copiar el programa sradmin.exe desde el instalador validar
+            copy:
+                    src: '{{ path_media_install_dir }}/sdic/linux/sradmin.exe'
+                    dest: '{{ path_sradmin }}/sradmin.exe'
+                    remote_src: yes
+                    backup: no
+
+          - name: Copiar el archivo sradmin.rc2
+            copy:
+                    src: '{{ path_media_install_dir }}/sdic/linux/sradmin.rc2'
+                    dest: /etc/init.d/sradmin
+                    remote_src: yes
+                    mode: '500'
+                    backup: no
+
+          - name: Chequeo de confirmación
+            command: /sbin/chkconfig --add sradmin
+
+          - name: Habilitar la opción de ejecutar para chmod u+x /sw/SPECTRUM/SRAdmin/sradmin.exe
+            command: chmod u+x /sw/SPECTRUM/SRAdmin/sradmin.exe
+
+          - name: Iniciar servicio de SRAdmin
+            command: /etc/init.d/sradmin start
+
+          - pause:
+                  seconds: 10
+
+
+          - name: Validar el servicio del SRAdmin
+            command: /etc/init.d/sradmin status
+
