@@ -45,7 +45,7 @@
           path_repogit_file: /home/Spectrum/git/ATower.InstallSpectrum.V10.4.zip
 
   
-  tasksurl_repogit:
+  tasks:
 
           - name: Validar si ya se encuentra instalado el git validando el servicio
             service_facts:
